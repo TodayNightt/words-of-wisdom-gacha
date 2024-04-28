@@ -1,0 +1,327 @@
+import { catchIfAny } from "~/utils/catch-if-any";
+import { API_SERVER } from "./login";
+import { toResult, ErrorWrapper } from "./types";
+import type { BackendResult, FortuneList, FortuneInfo, FortuneDeleteResponse, EditResponse, FortuneCreateResponse, FortuneCountResponse, Unit, FortuneCreateBulkResponse } from "./types";
+import { action, cache, redirect, reload } from "@solidjs/router";
+import { z } from "zod";
+import { getSession } from "./session";
+
+export const listFortune = cache(async () => {
+    "use server";
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        throw redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+    const result = await catchIfAny<BackendResult<FortuneList>>(fetch(`${API_SERVER}/api/fortune/list`, { headers }).then(res => res.json()));
+
+    if (result.isErr()) {
+        throw ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        if (backendResult.error.type === "NOT_LOGGED_IN") {
+            throw redirect("/admin/login");
+        }
+        throw ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+
+    console.log(backendResult.value.list)
+
+    return backendResult.value.list;
+}, "fortuneList")
+
+export const getFortuneInfo = cache(async (id: string) => {
+    "use server";
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        throw redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`);
+
+    const result = await catchIfAny<BackendResult<FortuneInfo>>(fetch(`${API_SERVER}/api/fortune/get?id=${id}`, { headers }).then(res => res.json()));
+
+    if (result.isErr()) {
+        throw ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        if (backendResult.error.type === "NOT_LOGGED_IN") {
+            throw redirect("/admin/login");
+        }
+        throw ErrorWrapper.fromBackendError(backendResult.error)
+    }
+
+    return backendResult.value
+}, "fortuneInfo")
+
+
+export const removeFortune = action(async (id: string) => {
+    "use server";
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        return redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+
+    const result = await catchIfAny<BackendResult<FortuneDeleteResponse>>(
+        fetch(`${API_SERVER}/api/fortune/delete?id=${id}`, {
+            headers,
+            method: "delete",
+        }).then((res) => res.json()),
+    );
+
+    if (result.isErr()) {
+        return ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        return ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    if (backendResult.value.id !== id) {
+        return new ErrorWrapper("Deleted value are not the right id", []);
+    }
+
+    return reload({ revalidate: listFortune.key })
+})
+
+export const editFortune = action(async (formData: FormData): Promise<ErrorWrapper | {
+    reload: never;
+    result: Unit;
+}> => {
+    "use server";
+
+    console.log(formData);
+    const id = String(formData.get("id"));
+    const fortune = String(formData.get("fortune"));
+    const collection = String(formData.get("collection"))
+
+
+
+    const schema = z.object({
+        id: z.string(),
+        fortune: z.string().min(1, { message: "Fortune must be longer" }),
+    })
+
+    const parsedResult = schema.safeParse({ id, fortune });
+    if (!parsedResult.success) {
+        const causes = parsedResult.error.issues.map(issue => issue.message);
+        return new ErrorWrapper("Validation Error", causes);
+    }
+
+
+    const body = JSON.stringify({
+        id: id,
+        collectionName: collection,
+        data: fortune
+    })
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        return redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+    const result = await catchIfAny<BackendResult<EditResponse>>(
+        fetch(`${API_SERVER}/api/fortune/update`, {
+            method: "post",
+            headers,
+            body: body,
+        }).then((res) => res.json()),
+    )
+
+    if (result.isErr()) {
+        return ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        return ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    if (backendResult.value.id !== id) {
+        return new ErrorWrapper("Edit value are not the right id", []);
+    }
+
+    return { reload: reload({ revalidate: listFortune.key }), result: "unit" }
+})
+
+export const createFortune = action(async (formData: FormData) => {
+    "use server";
+
+    const fortune = String(formData.get("fortune"));
+    const collection = String(formData.get("collection"))
+
+    const schema = z.object({
+        collection: z.string(),
+        fortune: z.string().min(1, { message: "Fortune must be longer" }),
+    })
+
+    const parsedResult = schema.safeParse({ collection, fortune });
+    if (!parsedResult.success) {
+        const causes = parsedResult.error.issues.map(issue => issue.message);
+        return new ErrorWrapper("Validation Error", causes);
+    }
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        return redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+    const method = "post"
+
+    const body = JSON.stringify({
+        fortune, collection
+    })
+
+
+    const result = await catchIfAny<BackendResult<FortuneCreateResponse>>(
+        fetch(`${API_SERVER}/api/fortune/create`, {
+            headers,
+            method,
+            body,
+        }).then((res) => res.json()),
+    );
+
+    if (result.isErr()) {
+        return ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        if (backendResult.error.type === "NOT_LOGGED_IN") {
+            return redirect("/admin/login");
+        }
+        return ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    return { reload: reload({ revalidate: listFortune.key }), result: backendResult.value.id }
+})
+
+
+export const getFortuneCountByCollection = cache(async (collectionName: string) => {
+    "use server";
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        throw redirect("/admin/login")
+    }
+    const headers = new Headers();
+    headers.append("Content-Type", "application/json");
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+    const method = "post"
+
+    const body = JSON.stringify({
+        collectionName
+    })
+
+
+    const result = await catchIfAny<BackendResult<FortuneCountResponse>>(
+        fetch(`${API_SERVER}/api/fortune/count`, {
+            headers,
+            method,
+            body,
+        }).then((res) => res.json()),
+    );
+
+    if (result.isErr()) {
+        throw ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        if (backendResult.error.type === "NOT_LOGGED_IN") {
+            throw redirect("/admin/login");
+        }
+        throw ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    if (backendResult.value.collectionName !== collectionName) {
+        throw new ErrorWrapper("The count getted are not the requested collectionName", [], "INTERNAL_SERVER_ERROR");
+    }
+
+    return backendResult.value.count
+}, "fortuneCountByCollection")
+
+export const createFortuneBulk = action(async (form: FormData) => {
+    "use server";
+
+    const session = await getSession();
+
+    if (!session.data.jwtToken) {
+        return redirect("/admin/login")
+    }
+    const headers = new Headers();
+    // headers.append("Content-Type", "multipart/form-data ; boundary=--Wbeejksljsdss");
+    // headers.append("Content-Length", contentLength)
+    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+
+
+    const method: RequestInit["method"] = "post"
+
+    const file = form.get("file") as File;
+
+    const formData = new FormData();
+    formData.set("file", file);
+    formData.set("hasHeader", form.get("hasHeader") ? "true" : "false");
+
+
+    const result = await catchIfAny<BackendResult<FortuneCreateBulkResponse>>(
+        fetch(`${API_SERVER}/api/fortune/bulk`, {
+            headers,
+            method,
+            body: form,
+        }).then((res) => {
+            return res.json();
+        }),
+    );
+
+    if (result.isErr()) {
+        return ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+
+    if (backendResult.isErr()) {
+        if (backendResult.error.type === "NOT_LOGGED_IN") {
+            return redirect("/admin/login");
+        }
+        return ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    return backendResult.value.added
+})

@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,body {
+  height: 100%;
+}
+
+.cal-height{
+  height: calc(100% - 100px);
+}
+
+.label-style{
+  @apply text-base font-bold;
+}
