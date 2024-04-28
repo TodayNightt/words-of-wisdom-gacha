@@ -1,7 +1,5 @@
 import { Button } from "@kobalte/core";
 import { Title } from "@solidjs/meta";
-import { createAsync, type RouteDefinition } from "@solidjs/router";
-import { Show } from "solid-js";
 import CenterDiv from "~/component/CenterDiv";
 // import DialogParent from "~/component/Dialog";
 import FullHeightMain from "~/component/FullHeightMain";

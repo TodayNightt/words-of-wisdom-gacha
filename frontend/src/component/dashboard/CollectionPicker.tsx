@@ -4,7 +4,6 @@ import {
 	type Accessor,
 	createEffect,
 	createMemo,
-	createResource,
 	createSignal,
 	createComputed,
 	Suspense,
@@ -12,14 +11,9 @@ import {
 	type Setter,
 } from "solid-js";
 import { Button, Popover } from "@kobalte/core";
-import {
-	FaRegularCircleXmark,
-	FaRegularTrashCan,
-	FaSolidPlus,
-} from "solid-icons/fa";
-import { createAsync, createAsyncStore, useAction } from "@solidjs/router";
+import { FaRegularTrashCan, FaSolidPlus } from "solid-icons/fa";
+import { createAsync, useAction } from "@solidjs/router";
 import DeletePopover from "./DeletePopover";
-import FullHeightMain from "../FullHeightMain";
 import FullWidthDiv from "../FullWidthDiv";
 
 type CollectionPickerProps = {
@@ -42,7 +36,7 @@ export default function CollectionPicker(props: CollectionPickerProps) {
 
 	const [validationInput, setValidationInput] = createSignal<string>("");
 	const validation: Accessor<"valid" | "invalid"> = createMemo(() => {
-		if (!collections()?.includes(validationInput())) {
+		if (!collections().includes(validationInput())) {
 			return "invalid";
 		}
 		return "valid";

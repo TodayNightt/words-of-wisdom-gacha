@@ -4,7 +4,6 @@ import { FileRoutes } from "@solidjs/start/router";
 import { Suspense } from "solid-js";
 import "./app.css";
 import { MetaProvider } from "@solidjs/meta";
-import DialogProvider from "./context/DialogContext";
 
 export default function App() {
 	return (

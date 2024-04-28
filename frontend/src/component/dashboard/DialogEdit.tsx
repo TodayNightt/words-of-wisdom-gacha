@@ -1,23 +1,12 @@
-import { Button, Dialog, TextField } from "@kobalte/core";
-import { createAsync, createAsyncStore, useSubmission } from "@solidjs/router";
-import { FaRegularCircleXmark } from "solid-icons/fa";
+import { Button } from "@kobalte/core";
+import { createAsync, useSubmission } from "@solidjs/router";
 import {
-	createEffect,
-	Suspense,
-	createResource,
-	type Setter,
-	type JSX,
-	Show,
-	lazy,
+	Suspense, type JSX, lazy
 } from "solid-js";
 
 import { useDialog } from "~/context/DialogContext";
 import { editFortune, getFortuneInfo } from "~/lib/fortune-data";
 import FormResult from "./FormResult";
-import { collectionList } from "~/lib/collection-data";
-import { ErrorWrapper, type FortuneInfo } from "~/lib/types";
-import { useDashboardContext } from "~/context/DashboardContext";
-import Combo from "../Combox";
 import CollectionPicker from "./CollectionPicker";
 import TextFieldWrapper from "../TextFieldWithGrid";
 

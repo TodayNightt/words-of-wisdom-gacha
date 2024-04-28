@@ -1,31 +1,10 @@
-import { Checkbox, Dialog, Tabs, TextField } from "@kobalte/core";
-import SelectWrapper from "../SelectWrapper";
-import { useDialog } from "~/context/DialogContext";
-import { useDashboardContext } from "~/context/DashboardContext";
-import { useSubmission } from "@solidjs/router";
-import {
-	createFortuneBulk,
-	createFortune,
-	editFortune,
-} from "~/lib/fortune-data";
+import { Tabs } from "@kobalte/core";
 
-import { Show, Suspense, createResource, createSignal } from "solid-js";
-import { collectionList } from "~/lib/collection-data";
-import { ErrorWrapper } from "~/lib/types";
-import CollectionPicker from "./CollectionPicker";
-import Dropper from "./Dropper";
-import TextFieldWrapper from "../TextFieldWithGrid";
-import Button from "../ButtonWrapper";
-import { FaSolidCheck } from "solid-icons/fa";
+import { Suspense } from "solid-js";
 import CreateBulkContent from "./FortuneCreateBulk";
-import FormResult from "./FormResult";
 import FortuneCreateSingleContent from "./FortuneCreateContent";
 
 export default function DialogCreate() {
-	const editResult = useSubmission(editFortune);
-	const [data, setData] = createSignal("");
-
-	const createResult = useSubmission(createFortune);
 	return (
 		<Tabs.Root
 			aria-label="Main navigation"

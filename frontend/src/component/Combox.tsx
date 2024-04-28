@@ -2,15 +2,8 @@ import { Combobox } from "@kobalte/core";
 import { FaSolidCaretLeft, FaSolidCheck } from "solid-icons/fa";
 import type { Accessor, Setter } from "solid-js";
 import {
-	Show,
-	createComputed,
-	createEffect,
-	createMemo,
-	createSignal,
-	onMount,
-	splitProps,
+	createComputed, createSignal, splitProps
 } from "solid-js";
-import FullWidthDiv from "./FullWidthDiv";
 
 type ComboProps = {
 	options?: Array<string>;

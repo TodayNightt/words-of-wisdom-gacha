@@ -1,4 +1,4 @@
-import { useSubmission, type RouteSectionProps } from "@solidjs/router";
+import { useSubmission } from "@solidjs/router";
 import { createSignal, lazy } from "solid-js";
 import { login } from "~/lib/login";
 import { TextField } from "@kobalte/core";

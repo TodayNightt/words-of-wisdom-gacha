@@ -1,5 +1,5 @@
 import { TextField } from "@kobalte/core";
-import { createEffect, createMemo } from "solid-js";
+import { createMemo } from "solid-js";
 
 type TextFieldWithGridProps = {
 	defaultValue?: string;
