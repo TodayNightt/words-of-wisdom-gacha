@@ -19,16 +19,16 @@ use tracing::{error_span, info};
 use tracing_subscriber::FmtSubscriber;
 use web::mw_context::mw_ctx_require;
 
-use crate::model::{get_db_pool, ModelManager};
-
+use crate::{
+    migrations::check_db_present,
+    model::{get_db_pool, ModelManager},
+};
 
 #[tokio::main]
 async fn main() -> Result<()> {
     tracing::subscriber::set_global_default(FmtSubscriber::default()).unwrap();
 
-    {
-
-    }
+    check_db_present().await?;
 
     let mm = ModelManager::new().await?;
 
