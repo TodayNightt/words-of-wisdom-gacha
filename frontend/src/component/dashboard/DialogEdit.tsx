@@ -1,18 +1,12 @@
 import { Button } from "@kobalte/core";
 import { createAsync, useSubmission } from "@solidjs/router";
-import {
-	Suspense, type JSX, lazy
-} from "solid-js";
+import { Suspense, type JSX, lazy } from "solid-js";
 
 import { useDialog } from "~/context/DialogContext";
 import { editFortune, getFortuneInfo } from "~/lib/fortune-data";
 import FormResult from "./FormResult";
 import CollectionPicker from "./CollectionPicker";
-import TextFieldWrapper from "../TextFieldWithGrid";
-
-const CenterDiv = lazy(() => import("../CenterDiv"));
-const FullWidthDiv = lazy(() => import("../FullWidthDiv"));
-const SelectWrapper = lazy(() => import("../SelectWrapper"));
+import TextFieldWrapper from "../TextFieldWrapper";
 
 export default function DialogEdit(): JSX.Element {
 	const { store } = useDialog();

@@ -3,7 +3,7 @@ import FormResult from "./FormResult";
 import { createFortune } from "~/lib/fortune-data";
 import CollectionPicker from "./CollectionPicker";
 import Button from "../ButtonWrapper";
-import TextFieldWrapper from "../TextFieldWithGrid";
+import TextFieldWrapper from "../TextFieldWrapper";
 import { onCleanup } from "solid-js";
 
 export default function FortuneCreateSingleContent() {
