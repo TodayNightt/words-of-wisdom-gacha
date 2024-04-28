@@ -20,7 +20,7 @@ export const collectionList = cache(async () => {
     const result = await catchIfAny<BackendResult<CollectionList>>(fetch(`${API_SERVER}/api/collections/list`, { headers }).then(res => res.json()));
 
     if (result.isErr()) {
-        return ErrorWrapper.fromError(result.error);
+        throw ErrorWrapper.fromError(result.error);
     }
 
     const backendResult = toResult(result.value);
@@ -29,7 +29,7 @@ export const collectionList = cache(async () => {
         if (backendResult.error.type === "NOT_LOGGED_IN") {
             return redirect("/admin/login");
         }
-        return ErrorWrapper.fromBackendError(backendResult.error);
+        throw ErrorWrapper.fromBackendError(backendResult.error);
     }
 
     return backendResult.value.list;
