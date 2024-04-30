@@ -7,7 +7,7 @@ import { type BackendResult, type LoginResponse, toResult, ErrorWrapper, type Lo
 import { catchIfAny } from "~/utils/catch-if-any";
 
 
-export const API_SERVER = "http://0.0.0.0:51000"
+export const API_SERVER = "http://backend-proxy"
 
 // export const getUser = cache(async () => {
 //   "use server";
@@ -54,8 +54,11 @@ export const login = action(async (formData: FormData) => {
   }).then(res => res.json()
   ));
 
+  console.log(loginResult);
+
 
   if (loginResult.isErr()) {
+    console.log("HELLO", loginResult.error)
     return ErrorWrapper.fromError(loginResult.error);
   }
 

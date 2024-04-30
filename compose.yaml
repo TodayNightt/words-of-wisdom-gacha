@@ -7,7 +7,7 @@
 # You can add other services your application may depend on here, such as a
 # database or a cache. For examples, see the Awesome Compose repository:
 # https://github.com/docker/awesome-compose
-name: word_of_wisdom_gacha
+name: words_of_wisdom_gacha
 services:
   frontend:
     build: frontend
@@ -17,15 +17,32 @@ services:
       - .env
     depends_on:
       - backend
+      - backend-proxy
+    networks:
+      - frontend
   backend:
     build:
       context: backend
     ports:
       - 51000:51000
     volumes:
-      - ./docker_dir:/app/
+      - ./container-data:/app/data
     env_file:
       - .env
+    networks:
+      - backend
+  backend-proxy:
+    build:
+      context: nginx
+    ports:
+      - 5000:80
+    networks:
+      - backend
+      - frontend
+
+networks:
+  backend: {}
+  frontend: {}
 
 # The commented out section below is an example of how to define a PostgreSQL
 # database that your application can use. `depends_on` tells Docker Compose to
