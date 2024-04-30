@@ -31,30 +31,18 @@ cargo build --locked --release
 cp ./target/release/$APP_NAME /bin/server
 EOF
 
-################################################################################
-# Create a new stage for running the application that contains the minimal
-# runtime dependencies for the application. This often uses a different base
-# image from the build stage where the necessary files are copied from the build
-# stage.
-#
-# The example below uses the debian bullseye image as the foundation for running the app.
-# By specifying the "bullseye-slim" tag, it will also use whatever happens to be the
-# most recent version of that tag when you build your Dockerfile. If
-# reproducability is important, consider using a digest
-# (e.g., debian@sha256:ac707220fbd7b67fc19b112cee8170b41a9e97f703f588b2cdbbcdcecdd8af57).
-FROM debian:bullseye-slim AS final
+FROM debian:12.5-slim AS final
+
+WORKDIR /app/data
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
-ARG UID=10001
-RUN adduser \
-    --disabled-password \
-    --gecos "" \
-    --home "/nonexistent" \
-    --shell "/sbin/nologin" \
-    --no-create-home \
-    --uid "${UID}" \
-    appuser
+ARG USER_ID=1000
+ARG GROUP_ID=1000
+
+RUN addgroup --gid $GROUP_ID appuser
+RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID appuser
+
 USER appuser
 
 # Copy the executable from the "build" stage.
@@ -65,3 +53,5 @@ EXPOSE 51000
 
 # What the container should run when it is started.
 CMD ["/bin/server"]
+
+

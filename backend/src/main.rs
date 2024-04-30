@@ -9,12 +9,12 @@ pub mod utils;
 pub mod web;
 use std::{fs, path::PathBuf};
 
-use axum::{middleware, Router};
+use axum::{http::HeaderValue, middleware, routing::get, Router};
 use config::config;
 pub use error::{Error, Result};
 use model::Db;
 use sqlx::{migrate::MigrateDatabase, Sqlite};
-// use tower_cookies::CookieManagerLayer;
+use tower_http::cors::{AllowOrigin, CorsLayer};
 use tracing::{error_span, info};
 use tracing_subscriber::FmtSubscriber;
 use web::mw_context::mw_ctx_require;
@@ -41,14 +41,18 @@ async fn main() -> Result<()> {
         .merge(web::routes_login::routes())
         .merge(web::routes_fortune::routes(mm.clone()))
         .merge(ctx_require_routes)
+        .route("/server/health", get(|| async { "Hello World" }))
         .layer(middleware::map_response(
             web::response_mapper::main_response_layer,
         ))
         .layer(middleware::from_fn_with_state(
             mm.clone(),
             web::mw_context::mw_get_ctx,
-        ));
-    // .layer(CookieManagerLayer::new());
+        ))
+        .layer(
+            CorsLayer::new()
+                .allow_origin(AllowOrigin::exact("http://backend-proxy".parse().unwrap())),
+        );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:51000")
         .await
