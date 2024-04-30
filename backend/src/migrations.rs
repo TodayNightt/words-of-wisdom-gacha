@@ -50,7 +50,14 @@ pub(crate) async fn check_db_present() -> Result<()> {
     // else run the initial db setup
     let migration_exist: Vec<PathBuf> = fs::read_dir(&config().MIGRATION_DIR)?
         .filter_map(|entry| entry.ok().map(|e| e.path()))
-        .filter(|path| !path.is_dir() && path.ends_with(".sql"))
+        .filter_map(|path| {
+            if let Some(extension) = path.extension() {
+                if extension.eq("sql") {
+                    return Some(path);
+                }
+            }
+            None
+        })
         .collect();
 
     let mut paths: Vec<PathBuf> = vec![];
