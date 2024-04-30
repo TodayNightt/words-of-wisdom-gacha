@@ -41,6 +41,8 @@ RUN pnpm build
 # where the necessary files are copied from the build stage.
 FROM base as final
 
+WORKDIR /app
+
 # Use production node environment by default.
 ENV NODE_ENV production
 
@@ -53,4 +55,4 @@ COPY --from=build /usr/src/app/.output .
 EXPOSE 3000
 
 # Run the application.
-CMD server/index.mjs
+CMD ["node","server/index.mjs"]

@@ -54,11 +54,7 @@ export const login = action(async (formData: FormData) => {
   }).then(res => res.json()
   ));
 
-  console.log(loginResult);
-
-
   if (loginResult.isErr()) {
-    console.log("HELLO", loginResult.error)
     return ErrorWrapper.fromError(loginResult.error);
   }
 
@@ -67,8 +63,6 @@ export const login = action(async (formData: FormData) => {
   if (backendResult.isErr()) {
     return ErrorWrapper.fromBackendError(backendResult.error);
   }
-
-  console.log(backendResult.value)
 
   const loginRes = backendResult.value;
 

@@ -25,7 +25,6 @@ export default function FormResult<T>(props: FormResultProps<T>) {
 			return undefined;
 		}
 		if (props.result instanceof Error) {
-			console.log(props.result);
 			return {
 				result: {
 					success: false,
