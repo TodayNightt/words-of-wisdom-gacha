@@ -37,8 +37,8 @@ WORKDIR /app/data
 
 # Create a non-privileged user that the app will run under.
 # See https://docs.docker.com/develop/develop-images/dockerfile_best-practices/#user
-ARG USER_ID=1000
-ARG GROUP_ID=1000
+ARG USER_ID
+ARG GROUP_ID
 
 RUN addgroup --gid $GROUP_ID appuser
 RUN adduser --disabled-password --gecos '' --uid $USER_ID --gid $GROUP_ID appuser
