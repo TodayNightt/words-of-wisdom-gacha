@@ -10,7 +10,10 @@
 name: words_of_wisdom_gacha
 services:
   frontend:
-    build: frontend
+    build: 
+      context: frontend
+      args:
+        -  SESSION_SECRET=${SESSION_SECRET}
     ports:
       - 52000:3000
     env_file:

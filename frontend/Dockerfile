@@ -17,6 +17,9 @@ FROM base as build
 # Set working directory for all build stages.
 WORKDIR /usr/src/app
 
+ARG SESSION_SECRET
+ENV SESSION_SECRET ${SESSION_SECRET}
+
 # Install pnpm.
 RUN --mount=type=cache,target=/root/.npm \
     npm install -g pnpm@${PNPM_VERSION}
