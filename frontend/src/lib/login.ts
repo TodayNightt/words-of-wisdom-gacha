@@ -1,28 +1,12 @@
 import { action, redirect } from "@solidjs/router";
 import { getSession } from "./session";
 import { z } from "zod";
-
-
-import { type BackendResult, type LoginResponse, toResult, ErrorWrapper, type LogoffResponse } from "./types";
+import type { BackendResult, LoginResponse, LogoffResponse } from "./types";
 import { catchIfAny } from "~/utils/catch-if-any";
+import { API_SERVER } from "./api-server_url";
+import { ErrorWrapper } from "~/utils/error-wrapper";
+import { toResult } from "./error";
 
-
-export const API_SERVER = "http://backend-proxy"
-
-// export const getUser = cache(async () => {
-//   "use server";
-//   try {
-//     const session = await getSession();
-//     const userId = session.data.userId;
-//     if (userId === undefined) throw new Error("User not found");
-//     // const user = await db.user.findUnique({ where: { id: userId } });
-//     // if (!user) throw new Error("User not found");
-//     // return { id: user.id, username: user.username };
-//   } catch {
-//     await logoutSession();
-//     throw redirect("/login");
-//   }
-// }, "user");
 
 export const login = action(async (formData: FormData) => {
   "use server";

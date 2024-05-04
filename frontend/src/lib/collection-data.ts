@@ -1,9 +1,11 @@
 import { action, cache, redirect, reload } from "@solidjs/router";
-import { type BackendResult, ErrorWrapper, toResult, type CollectionList, type CreateCollectionResponse, type Unit, type DeleteCollectionRespose } from "./types";
+import type { BackendResult, CollectionList, CreateCollectionResponse, DeleteCollectionRespose } from "./types";
 import { catchIfAny } from "~/utils/catch-if-any";
-import { API_SERVER } from "./login";
+import { API_SERVER } from "./api-server_url";
 import { getSession } from "./session";
 import { getFortuneInfo, listFortune } from "./fortune-data";
+import { ErrorWrapper } from "~/utils/error-wrapper";
+import { toResult } from "./error";
 
 export const collectionList = cache(async () => {
     "use server";

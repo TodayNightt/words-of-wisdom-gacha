@@ -1,6 +1,7 @@
 import { createAsync } from "@solidjs/router";
-import { Suspense } from "solid-js";
-import { API_SERVER } from "~/lib/login";
+import { ErrorBoundary } from "solid-js";
+import ErrorPage from "~/component/ErrorPage";
+import { API_SERVER } from "~/lib/api-server_url";
 
 async function getHello() : Promise<string> {
     "use server";

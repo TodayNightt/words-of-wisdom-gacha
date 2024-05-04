@@ -1,10 +1,11 @@
 import { catchIfAny } from "~/utils/catch-if-any";
-import { API_SERVER } from "./login";
-import { toResult, ErrorWrapper } from "./types";
-import type { BackendResult, FortuneList, FortuneInfo, FortuneDeleteResponse, EditResponse, FortuneCreateResponse, FortuneCountResponse, Unit, FortuneCreateBulkResponse } from "./types";
+import { API_SERVER } from "./api-server_url";
+import type { BackendResult, FortuneInfo, FortuneDeleteResponse, FortuneEditResponse, FortuneCreateResponse, FortuneCountResponse, Unit, FortuneCreateBulkResponse, FortuneListResponse, FortuneRandomResponse } from "./types";
 import { action, cache, redirect, reload } from "@solidjs/router";
 import { z } from "zod";
 import { getSession } from "./session";
+import { ErrorWrapper } from "~/utils/error-wrapper";
+import { toResult } from "./error";
 
 export const listFortune = cache(async () => {
     "use server";
