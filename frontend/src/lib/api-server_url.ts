@@ -1,1 +1,3 @@
-export const API_SERVER = process.env.API_URL ?? "http://localhost:51000";
+import { Environment } from "~/environments";
+
+export const API_SERVER = Environment.getInstance().get("API_URL");
