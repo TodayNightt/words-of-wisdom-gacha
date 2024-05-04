@@ -1,7 +1,6 @@
 import { Dialog } from "@kobalte/core";
 import { FaRegularCircleXmark } from "solid-icons/fa";
 import { Suspense, Show, Switch, Match, lazy } from "solid-js";
-import { useDashboardContext } from "~/context/DashboardContext";
 import { DialogMode, useDialog } from "~/context/DialogContext";
 import CreateDialog from "./DialogCreate";
 import CenterDiv from "../CenterDiv";
@@ -22,7 +21,6 @@ const MODE_TITLE = [
 ];
 
 export default function DialogParent() {
-	const { setNeedRefetch } = useDashboardContext();
 	const { store, closeDialog } = useDialog();
 
 	return (

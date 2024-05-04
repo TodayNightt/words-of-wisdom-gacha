@@ -8,7 +8,7 @@ export default function DialogCreate() {
 	return (
 		<Tabs.Root
 			aria-label="Main navigation"
-			class="w-full flex-grow px-4"
+			class="flex-grow px-4 flex flex-col w-[80%]"
 			// defaultValue="dashboard"
 		>
 			<Tabs.List class="flex relative items-center">
@@ -27,10 +27,10 @@ export default function DialogCreate() {
 				<Tabs.Indicator class="abosolute bg-slate-400" />
 			</Tabs.List>
 			<Tabs.Content
-				class="container px-4 py-8 flex-grow flex flex-col gap-8 justify-center"
+				class="container px-4 py-8 flex-grow flex flex-col gap-8 justify-center items-center"
 				value="single"
 			>
-				<Suspense fallback={"Loading..."}>
+				<Suspense fallback={<div class="flex-grow">Loading...</div>}>
 					<FortuneCreateSingleContent />
 				</Suspense>
 			</Tabs.Content>

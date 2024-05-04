@@ -25,17 +25,17 @@ export default function FortuneCreateSingleContent() {
 			<form
 				action={createFortune}
 				method="post"
-				class="flex gap-4 flex-col px-4"
+				class="flex gap-4 flex-col px-4 flex-grow"
 			>
 				<CollectionPicker needLabel={true} editable={true} />
 
-					<TextWrapper
-						type={"textarea"}
-						tailwind="flex-grow"
-						name="fortune"
-						label="Fortune :"
-						disabled={false}
-					/>
+				<TextWrapper
+					type={"textarea"}
+					tailwind="flex-grow"
+					name="fortune"
+					label="Fortune :"
+					disabled={false}
+				/>
 
 				<div class="flex justify-center mt-2">
 					<Button

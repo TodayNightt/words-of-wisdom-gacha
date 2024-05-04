@@ -1,5 +1,5 @@
 // @refresh roload
-import { ErrorBoundary, Suspense, lazy } from "solid-js";
+import { ErrorBoundary, Suspense } from "solid-js";
 import { Title } from "@solidjs/meta";
 import FilterContext from "~/context/FilterContext";
 import { useAction } from "@solidjs/router";
@@ -29,7 +29,7 @@ export default function Dashboard() {
 						<span class="flex text-ellipsis flex-grow">Log off</span>
 					</Button>
 				</nav>
-				<div class="cal-height container flex flex-col bg-gray-50 rounded-xl box-border p-4 size-full">
+				<div class="cal-height container flex flex-col bg-gray-50 rounded-xl box-border px-4 py-7 size-full">
 					<FilterContext>
 						<Seachable />
 						<Suspense fallback={<div class="cal-height">Loading...</div>}>

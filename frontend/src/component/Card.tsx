@@ -15,8 +15,8 @@ export default function Card<
 >(props: CardProps<T>) {
 	return (
 		<div class="container p-4 rounded-xl bg-white flex justify-between items-center">
-			<div class="flex gap-4 items-center flex-wrap sm:w-2/5">
-				<h2>{props.data.title}</h2>
+			<div class="text-pretty flex gap-4 items-center flex-wrap sm:w-2/5 box-border">
+				<h2 class="break-words min-w-[20%] max-w-[100%]">{props.data.title}</h2>
 				<Show when={props.data.tags}>
 					<For each={props.data.tags}>
 						{(item) => {

@@ -28,14 +28,14 @@ export default function TextWrapper(props: TextFieldWithGridProps) {
 					<TextField.Input
 						value={defaultVal()}
 						placeholder={props.name}
-						class={"rounded-xl px-4 py-2 font-medium"}
+						class={"rounded-xl px-4 py-2 font-medium min-w-[17.5rem]"}
 					/>
 				</Match>
 				<Match when={props.type === "textarea"}>
 					<TextField.TextArea
 						value={defaultVal()}
 						placeholder={props.name}
-						class="rounded-xl px-4 py-2 font-medium flex-grow h-4/5"	
+						class="rounded-xl px-4 py-2 font-medium flex-grow h-4/5  min-w-[17.5rem]"
 					/>
 				</Match>
 			</Switch>
