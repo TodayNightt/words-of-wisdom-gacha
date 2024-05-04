@@ -80,7 +80,10 @@ pub(crate) async fn exec_fortune_get_random(mm: &ModelManager) -> Result<Fortune
     info!("EXECUTOR - exec_fortune_get_random");
     let result = FortuneBmc::get_random(mm).await?;
 
-    Ok(FortuneRandom(result))
+    Ok(FortuneRandom {
+        fortune: result.0,
+        collection_name: result.1,
+    })
 }
 
 pub(crate) async fn exec_fortune_list(mm: &ModelManager) -> Result<FortuneList> {
