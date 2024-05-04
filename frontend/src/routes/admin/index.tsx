@@ -1,5 +1,5 @@
 // @refresh roload
-import { Suspense, lazy } from "solid-js";
+import { ErrorBoundary, Suspense, lazy } from "solid-js";
 import { Title } from "@solidjs/meta";
 import FilterContext from "~/context/FilterContext";
 import { useAction } from "@solidjs/router";
@@ -8,8 +8,8 @@ import Seachable from "~/component/dashboard/Seachable";
 import Button from "~/component/ButtonWrapper";
 import { ImExit } from "solid-icons/im";
 import FortuneList from "~/component/dashboard/FortuneList";
-import ErrorPage from "~/component/ErrorPage";
 import DashboardDialog from "~/component/dashboard/DashboardDialog";
+import ErrorPage from "~/component/ErrorPage";
 
 export default function Dashboard() {
 	const logoffAction = useAction(logout);
