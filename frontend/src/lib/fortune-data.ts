@@ -19,7 +19,7 @@ export const listFortune = cache(async () => {
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
 
-    const result = await catchIfAny<BackendResult<FortuneList>>(fetch(`${API_SERVER}/api/fortune/list`, { headers }).then(res => res.json()));
+    const result = await catchIfAny<BackendResult<FortuneListResponse>>(fetch(`${API_SERVER}/api/fortune/list`, { headers }).then(res => res.json()));
 
     if (result.isErr()) {
         throw ErrorWrapper.fromError(result.error);
@@ -147,7 +147,7 @@ export const editFortune = action(async (formData: FormData): Promise<ErrorWrapp
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
 
-    const result = await catchIfAny<BackendResult<EditResponse>>(
+    const result = await catchIfAny<BackendResult<FortuneEditResponse>>(
         fetch(`${API_SERVER}/api/fortune/update`, {
             method: "post",
             headers,
