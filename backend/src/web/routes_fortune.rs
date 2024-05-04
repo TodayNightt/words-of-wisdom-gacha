@@ -18,10 +18,11 @@ use crate::utils::Extractor;
 // region: types
 
 #[derive(Debug, Serialize)]
+#[serde(rename_all = "camelCase")]
 pub struct FortuneEntity {
     id: String,
     fortune: String,
-    collection: String,
+    collection_name: String,
 }
 
 impl From<(String, String, String)> for FortuneEntity {
@@ -29,17 +30,17 @@ impl From<(String, String, String)> for FortuneEntity {
         FortuneEntity {
             id: value.0,
             fortune: value.1,
-            collection: value.2,
+            collection_name: value.2,
         }
     }
 }
 
 impl FortuneEntity {
-    pub fn new(id: String, fortune: String, collection: String) -> Self {
+    pub fn new(id: String, fortune: String, collection_name: String) -> Self {
         FortuneEntity {
             id,
             fortune,
-            collection,
+            collection_name,
         }
     }
 }
