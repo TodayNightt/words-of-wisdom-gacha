@@ -1,13 +1,11 @@
 import { useSubmission } from "@solidjs/router";
-import { createSignal, lazy } from "solid-js";
+import { createSignal } from "solid-js";
 import { login } from "~/lib/login";
 import { TextField } from "@kobalte/core";
 import Button from "~/component/ButtonWrapper";
 
-
 import CenterDiv from "~/component/CenterDiv";
 import FormResult from "~/component/dashboard/FormResult";
-
 
 export default function Login() {
 	const loginResult = useSubmission(login);
@@ -21,7 +19,7 @@ export default function Login() {
 				{/* FIXME : the responsive for larger screen does not work */}
 				<FormResult
 					height="h-2/6"
-					responsiveWidth="w-full md:w-4/5 sm:w-full"
+					responsiveWidth="w-full md:w-4/5"
 					result={loginResult.result}
 				>
 					{(_data) => <h1 class="font-bold text-xl">Login success</h1>}

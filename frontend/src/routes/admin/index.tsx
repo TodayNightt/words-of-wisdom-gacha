@@ -1,5 +1,5 @@
 // @refresh roload
-import { ErrorBoundary, Suspense, lazy } from "solid-js";
+import { ErrorBoundary, Suspense } from "solid-js";
 import { Title } from "@solidjs/meta";
 import FilterContext from "~/context/FilterContext";
 import { useAction } from "@solidjs/router";

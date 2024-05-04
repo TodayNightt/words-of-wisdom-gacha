@@ -30,7 +30,7 @@ export default function DeletePopover(props: DeletePopoverProps) {
 		props.popoverCloser(false);
 	};
 	return (
-		<Suspense fallback={"Loading..."}>
+		<Suspense fallback={<div>Loading...</div>}>
 			<div class="flex gap-4 flex-col justify-center">
 				<Switch
 					fallback={

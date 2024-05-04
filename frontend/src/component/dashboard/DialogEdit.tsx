@@ -15,65 +15,64 @@ export default function DialogEdit(): JSX.Element {
 		initialValue: {
 			id: store.itemId ?? "",
 			fortune: "",
-			collection: "",
+			collectionName: "",
 		},
 	});
 
 	return (
 		<>
-			{/* <Dialog.Content class="z-50 border border-solid rounded-xl bg-gray-50 w-2/5 h-3/5 sm:w-4/5 xl:w-2/5"> */}
-			<FormResult
-				height="h-1/5"
-				responsiveWidth="w-4/5"
-				result={editResult.result}
-			>
-				{(_data) => <h1>Edit success</h1>}
-			</FormResult>
-			<Suspense fallback={<div>Loading</div>}>
-				<div class="container px-4 flex-grow flex justify-center">
-					<form
-						action={editFortune}
-						method="post"
-						class="flex gap-4 flex-col px-4"
-					>
-						<TextWrapper
-							type={"textfield"}
-							defaultValue={store.itemId ?? undefined}
-							name="id"
-							label="Internal ID :"
-							disabled={true}
-						/>
-
-						<Suspense fallback={<div>Loading</div>}>
-							<CollectionPicker
-								needLabel={true}
-								editable={true}
-								defaultValue={data().collection}
+			<div class="w-full flex-grow p-4 flex flex-col">
+				<FormResult
+					height="h-1/5"
+					responsiveWidth="w-4/5"
+					result={editResult.result}
+				>
+					{(_data) => <h1>Edit success</h1>}
+				</FormResult>
+				<Suspense fallback={<div class="flex-grow">Loading...</div>}>
+					<div class="container px-4 flex-grow flex justify-center box-border">
+						<form
+							action={editFortune}
+							method="post"
+							class="flex gap-4 flex-col px-4 box-border"
+						>
+							<TextWrapper
+								type={"textfield"}
+								defaultValue={store.itemId ?? undefined}
+								name="id"
+								label="Internal ID :"
+								disabled={true}
 							/>
-						</Suspense>
 
-						<TextWrapper
-							tailwind="flex-grow"
-							type={"textarea"}
-							defaultValue={data().fortune}
-							name="fortune"
-							label="Fortune :"
-							disabled={false}
-						/>
+							<Suspense fallback={<div class="flex-grow">Loading...</div>}>
+								<CollectionPicker
+									needLabel={true}
+									editable={true}
+									defaultValue={data().collectionName}
+								/>
+							</Suspense>
 
-						<div class="flex justify-center mt-2">
-							<Button.Root
-								class="rounded-xl p-2 bg-blue-200 w-1/2 hover:bg-blue-300"
-								type="submit"
-							>
-								Edit
-							</Button.Root>
-						</div>
-					</form>
-				</div>
-				{/* </CenterDiv> */}
-			</Suspense>
-			{/* </Dialog.Content> */}
+							<TextWrapper
+								tailwind="flex-grow"
+								type={"textarea"}
+								defaultValue={data().fortune}
+								name="fortune"
+								label="Fortune :"
+								disabled={false}
+							/>
+
+							<div class="flex justify-center mt-2">
+								<Button.Root
+									class="rounded-xl p-2 bg-blue-200 w-1/2 hover:bg-blue-300"
+									type="submit"
+								>
+									Edit
+								</Button.Root>
+							</div>
+						</form>
+					</div>
+				</Suspense>
+			</div>
 		</>
 	);
 }
