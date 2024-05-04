@@ -31,13 +31,15 @@ impl Error {
                 CtxError::NoTokenPresent | CtxError::InvalidToken => {
                     (StatusCode::UNAUTHORIZED, ClientError::NOT_LOGGED_IN)
                 }
-                CtxError::IncorrectUsername => todo!(),
-                CtxError::CtxNotInRequestExt => todo!(),
+                CtxError::IncorrectUsername => (StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL),
                 _ => (
                     StatusCode::INTERNAL_SERVER_ERROR,
                     ClientError::INTERNAL_SERVER_ERROR,
                 ),
             },
+            Error::LoginWrongPass | Error::LoginWrongUser(_) => {
+                (StatusCode::FORBIDDEN, ClientError::LOGIN_FAIL)
+            }
             _ => (
                 StatusCode::INTERNAL_SERVER_ERROR,
                 ClientError::INTERNAL_SERVER_ERROR,
@@ -92,6 +94,7 @@ impl std::error::Error for Error {}
 #[allow(non_camel_case_types)]
 #[derive(Debug, strum_macros::AsRefStr)]
 pub enum ClientError {
+    LOGIN_FAIL,
     INTERNAL_SERVER_ERROR,
     NOT_LOGGED_IN,
 }

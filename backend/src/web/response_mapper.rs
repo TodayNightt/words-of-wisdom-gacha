@@ -32,6 +32,7 @@ pub async fn main_response_layer(res: Response) -> Response {
 
     info!("error :{:?}", error_response);
     info!("res :{:?}", res);
+    info!("sending :{:?}", error_response.as_ref().unwrap_or(&res));
     // let client_error = client_status_error.unzip().1;
     error_response.unwrap_or(res)
 }
