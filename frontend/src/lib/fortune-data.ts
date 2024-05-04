@@ -195,14 +195,14 @@ export const createFortune = action(async (formData: FormData) => {
     "use server";
 
     const fortune = String(formData.get("fortune"));
-    const collection = String(formData.get("collection"))
+    const collectionName = String(formData.get("collection"))
 
     const schema = z.object({
-        collection: z.string(),
+        collectionName: z.string(),
         fortune: z.string().min(1, { message: "Fortune must be longer" }),
     })
 
-    const parsedResult = schema.safeParse({ collection, fortune });
+    const parsedResult = schema.safeParse({ collectionName, fortune });
     if (!parsedResult.success) {
         const causes = parsedResult.error.issues.map(issue => issue.message);
         return new ErrorWrapper("Validation Error", causes);
@@ -219,9 +219,7 @@ export const createFortune = action(async (formData: FormData) => {
 
     const method = "post"
 
-    const body = JSON.stringify({
-        fortune, collection
-    })
+    const body = JSON.stringify(parsedResult.data)
 
 
     const result = await catchIfAny<BackendResult<FortuneCreateResponse>>(
