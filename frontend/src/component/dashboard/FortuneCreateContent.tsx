@@ -29,7 +29,13 @@ export default function FortuneCreateSingleContent() {
 			>
 				<CollectionPicker needLabel={true} editable={true} />
 
-				<TextFieldWrapper name="fortune" label="Fortune :" disabled={false} />
+					<TextWrapper
+						type={"textarea"}
+						tailwind="flex-grow"
+						name="fortune"
+						label="Fortune :"
+						disabled={false}
+					/>
 
 				<div class="flex justify-center mt-2">
 					<Button

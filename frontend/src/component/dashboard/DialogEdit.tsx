@@ -6,7 +6,7 @@ import { useDialog } from "~/context/DialogContext";
 import { editFortune, getFortuneInfo } from "~/lib/fortune-data";
 import FormResult from "./FormResult";
 import CollectionPicker from "./CollectionPicker";
-import TextFieldWrapper from "../TextFieldWrapper";
+import TextWrapper from "../TextFieldWrapper";
 
 export default function DialogEdit(): JSX.Element {
 	const { store } = useDialog();
@@ -36,7 +36,8 @@ export default function DialogEdit(): JSX.Element {
 						method="post"
 						class="flex gap-4 flex-col px-4"
 					>
-						<TextFieldWrapper
+						<TextWrapper
+							type={"textfield"}
 							defaultValue={store.itemId ?? undefined}
 							name="id"
 							label="Internal ID :"
@@ -51,7 +52,9 @@ export default function DialogEdit(): JSX.Element {
 							/>
 						</Suspense>
 
-						<TextFieldWrapper
+						<TextWrapper
+							tailwind="flex-grow"
+							type={"textarea"}
 							defaultValue={data().fortune}
 							name="fortune"
 							label="Fortune :"
