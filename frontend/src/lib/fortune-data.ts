@@ -40,6 +40,25 @@ export const listFortune = cache(async () => {
     return backendResult.value.list;
 }, "fortuneList")
 
+export async function getRandom() {
+    "use server";
+
+    const result = await catchIfAny<BackendResult<FortuneRandomResponse>>(fetch(`${API_SERVER}/api/fortune/random`).then((res => res.json())));
+
+    if (result.isErr()) {
+        console.log(result.error)
+        throw ErrorWrapper.fromError(result.error);
+    }
+
+    const backendResult = toResult(result.value);
+
+    if (backendResult.isErr()) {
+        throw ErrorWrapper.fromBackendError(backendResult.error);
+    }
+
+    return backendResult.value;
+}
+
 export const getFortuneInfo = cache(async (id: string) => {
     "use server";
 
