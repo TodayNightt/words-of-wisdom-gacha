@@ -213,7 +213,6 @@ dependencies = [
  "sqids",
  "sqlx",
  "strum_macros",
- "tempfile",
  "time",
  "tokio",
  "tower-http",

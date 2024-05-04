@@ -1,5 +1,4 @@
 use axum::{
-    extract::Request,
     http::{header, Response},
     response::IntoResponse,
 };
@@ -16,7 +15,7 @@ pub const AUTH_TOKEN: &str = "auth-token";
 
 // https://github.com/rust10x/rust-web-app/blob/9995c67e01003b42e08887b4a6941b5e8743d5bf/src/web/mod.rs#L20
 pub(in crate::web) fn set_token_cookie<T: IntoResponse>(
-    mut res: &mut Response<T>,
+    res: &mut Response<T>,
     token: String,
 ) -> Result<()> {
     let cookie = Cookie::build((AUTH_TOKEN, token.to_owned()))
@@ -32,9 +31,7 @@ pub(in crate::web) fn set_token_cookie<T: IntoResponse>(
     Ok(())
 }
 
-pub(in crate::web) fn remove_token_cookie<T: IntoResponse>(
-    mut req: &mut Response<T>,
-) -> Result<()> {
+pub(in crate::web) fn remove_token_cookie<T: IntoResponse>(req: &mut Response<T>) -> Result<()> {
     let cookie = Cookie::build((AUTH_TOKEN, ""))
         .path("/")
         .max_age(time::Duration::hours(-1))

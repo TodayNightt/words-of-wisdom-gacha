@@ -60,16 +60,14 @@ pub(crate) async fn check_db_present() -> Result<()> {
         })
         .collect();
 
-    let mut paths: Vec<PathBuf> = vec![];
-
     // If the filtered out migration paths are not empty, we shall run that instead
-    if !migration_exist.is_empty() {
-        paths = migration_exist
+    let paths: Vec<PathBuf> = if !migration_exist.is_empty() {
+        migration_exist
     } else {
-        paths = fs::read_dir(format!("{}/initial", &config().MIGRATION_DIR))?
+        fs::read_dir(format!("{}/initial", &config().MIGRATION_DIR))?
             .filter_map(|entry| entry.ok().map(|e| e.path()))
-            .collect();
-    }
+            .collect()
+    };
 
     for path in paths.into_iter() {
         if let Some(path) = path.to_str() {

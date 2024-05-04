@@ -3,7 +3,7 @@ use axum::{
     Json,
 };
 use serde_json::json;
-use tracing::{error, info};
+use tracing::info;
 use uuid::Uuid;
 
 use super::Error;

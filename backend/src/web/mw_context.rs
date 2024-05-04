@@ -1,4 +1,4 @@
-use std::sync::Arc;
+
 
 use axum::async_trait;
 use axum::extract::FromRequestParts;
@@ -10,12 +10,10 @@ use axum::http::HeaderValue;
 use axum::middleware::Next;
 use axum::response::Response;
 use axum_extra::extract::cookie::CookieJar;
-use axum_extra::extract::cookie::SameSite;
 use jsonwebtoken::DecodingKey;
 use jsonwebtoken::Validation;
 use rand::Rng;
 use serde::Serialize;
-use tracing::debug;
 use tracing::info;
 
 use crate::auth;

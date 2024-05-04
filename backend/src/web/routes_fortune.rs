@@ -3,9 +3,7 @@ use axum::routing::{delete, post};
 use axum::{extract::State, routing::get, Json, Router};
 use serde::{Deserialize, Serialize};
 use serde_json::{json, Value};
-use tempfile::NamedTempFile;
 use tracing::{info, span, Level};
-
 use super::{Error, Result};
 use crate::model::exec_helper::{
     exec_fortune_count_by_collection, exec_fortune_create, exec_fortune_create_bulk,

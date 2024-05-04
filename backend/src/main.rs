@@ -1,4 +1,3 @@
-mod _dev_utils;
 pub mod auth;
 pub mod config;
 pub mod ctx;
@@ -7,22 +6,16 @@ mod migrations;
 pub mod model;
 pub mod utils;
 pub mod web;
-use std::{fs, path::PathBuf};
 
-use axum::{http::HeaderValue, middleware, routing::get, Router};
+use axum::{middleware, routing::get, Router};
 use config::config;
 pub use error::{Error, Result};
-use model::Db;
-use sqlx::{migrate::MigrateDatabase, Sqlite};
 use tower_http::cors::{AllowOrigin, CorsLayer};
-use tracing::{error_span, info};
+use tracing::info;
 use tracing_subscriber::FmtSubscriber;
 use web::mw_context::mw_ctx_require;
 
-use crate::{
-    migrations::check_db_present,
-    model::{get_db_pool, ModelManager},
-};
+use crate::{migrations::check_db_present, model::ModelManager};
 
 #[tokio::main]
 async fn main() -> Result<()> {

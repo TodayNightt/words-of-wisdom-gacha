@@ -1,15 +1,9 @@
-use super::{remove_token_cookie, Error, Result, AUTH_TOKEN};
+use super::{remove_token_cookie, Error, Result};
 use crate::{auth::TokenClaims, config::config, web::set_token_cookie};
-use axum::{
-    http::{header, Response},
-    response::IntoResponse,
-    routing::post,
-    Json, Router,
-};
-use axum_extra::extract::cookie::{Cookie, CookieJar, SameSite};
+use axum::{response::IntoResponse, routing::post, Json, Router};
 use jsonwebtoken::{encode, EncodingKey, Header};
 use serde::Deserialize;
-use serde_json::{json, Value};
+use serde_json::json;
 use tracing::info;
 
 pub fn routes_with_context() -> Router {
@@ -71,7 +65,7 @@ async fn handle_login(Json(payload): Json<UserForLogin>) -> Result<impl IntoResp
     }))
     .into_response();
 
-    set_token_cookie(&mut response, token);
+    set_token_cookie(&mut response, token)?;
 
     Ok(response)
 }

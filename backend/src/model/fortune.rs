@@ -1,9 +1,8 @@
-use std::{collections::HashMap, result};
+use std::collections::HashMap;
 
 use crate::utils::Extractor;
 
 use super::{Error, Result};
-use sqlx::{query_builder, sqlite::SqliteQueryResult, QueryBuilder, Sqlite, Statement};
 use tracing::info;
 
 use super::ModelManager;
@@ -74,8 +73,6 @@ impl FortuneBmc {
         info!("FortuneBmc - create_bulk");
 
         let db = mm.db();
-
-        const BIND_LIMIT: u16 = 65535;
 
         let mut result_ids: Vec<FortuneIdWithoutEncoding> = vec![];
 

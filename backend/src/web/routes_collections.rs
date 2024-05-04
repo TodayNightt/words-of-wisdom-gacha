@@ -11,7 +11,7 @@ use super::{Error, Result};
 use crate::model::{
     exec_helper::{
         exec_collection_swap_and_delete, exec_collections_create, exec_collections_delete,
-        exec_collections_exists_or_create, exec_collections_get, exec_collections_list,
+        exec_collections_get, exec_collections_list,
     },
     ModelManager,
 };
@@ -159,7 +159,7 @@ async fn delete_collection(
     });
 
     if swap_to_collection_name_option.is_some() && affected_rows_option.is_some() {
-        if let Some(mut object) = value
+        if let Some(object) = value
             .as_object_mut()
             .and_then(|val| val.get_mut("result"))
             .and_then(|result_val| result_val.as_object_mut())

@@ -1,6 +1,6 @@
 use crate::{
     utils::Extractor,
-    web::routes_collections::{CollectionEntity, CollectionName, CollectionNames},
+    web::routes_collections::{CollectionName, CollectionNames},
 };
 
 use super::{Error, Result};

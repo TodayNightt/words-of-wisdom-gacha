@@ -1,9 +1,4 @@
-use axum::{
-    http::StatusCode,
-    response::{IntoResponse, Response},
-};
 use serde::Serialize;
-use tracing::info;
 
 use crate::model;
 
@@ -43,5 +38,3 @@ impl core::fmt::Display for Error {
     }
 }
 impl std::error::Error for Error {}
-
-
