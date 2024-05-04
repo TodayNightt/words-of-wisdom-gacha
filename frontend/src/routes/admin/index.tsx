@@ -7,11 +7,9 @@ import { logout } from "~/lib/login";
 import Seachable from "~/component/dashboard/Seachable";
 import Button from "~/component/ButtonWrapper";
 import { ImExit } from "solid-icons/im";
-
-const DashboardDialog = lazy(
-	() => import("~/component/dashboard/DashboardDialog"),
-);
-const FortuneList = lazy(() => import("~/component/dashboard/FortuneList"));
+import FortuneList from "~/component/dashboard/FortuneList";
+import DashboardDialog from "~/component/dashboard/DashboardDialog";
+import ErrorPage from "~/component/ErrorPage";
 
 export default function Dashboard() {
 	const logoffAction = useAction(logout);

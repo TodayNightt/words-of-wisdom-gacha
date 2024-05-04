@@ -4,8 +4,10 @@ import { login } from "~/lib/login";
 import { TextField } from "@kobalte/core";
 import Button from "~/component/ButtonWrapper";
 
-const CenterDiv = lazy(() => import("~/component/CenterDiv"));
-const FormResult = lazy(() => import("~/component/dashboard/FormResult"));
+
+import CenterDiv from "~/component/CenterDiv";
+import FormResult from "~/component/dashboard/FormResult";
+
 
 export default function Login() {
 	const loginResult = useSubmission(login);
