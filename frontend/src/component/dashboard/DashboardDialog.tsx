@@ -4,10 +4,9 @@ import { Suspense, Show, Switch, Match, lazy } from "solid-js";
 import { useDashboardContext } from "~/context/DashboardContext";
 import { DialogMode, useDialog } from "~/context/DialogContext";
 import CreateDialog from "./DialogCreate";
-
-const CenterDiv = lazy(() => import("../CenterDiv"));
-const FullWidthDiv = lazy(() => import("../FullWidthDiv"));
-const EditDialog = lazy(() => import("./DialogEdit"));
+import CenterDiv from "../CenterDiv";
+import FullWidthDiv from "../FullWidthDiv";
+import DialogEdit from "./DialogEdit";
 
 //	Edit: 0,
 // Create: 1,
@@ -48,7 +47,7 @@ export default function DialogParent() {
 									</FullWidthDiv>
 									<Switch>
 										<Match when={store.mode === DialogMode.Edit}>
-											<EditDialog />
+											<DialogEdit />
 										</Match>
 										<Match when={store.mode === DialogMode.Create}>
 											<CreateDialog />

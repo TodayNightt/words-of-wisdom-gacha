@@ -4,8 +4,7 @@ import { useDashboardContext } from "~/context/DashboardContext";
 import { DialogMode, useDialog } from "~/context/DialogContext";
 import { useFilter } from "~/context/FilterContext";
 import { listFortune, removeFortune } from "~/lib/fortune-data";
-
-const Card = lazy(() => import("../Card"));
+import Card from "../Card";
 
 export default function FortuneList() {
 	const deleteAction = useAction(removeFortune);
@@ -13,7 +12,7 @@ export default function FortuneList() {
 	const { store: filterStore, setFilter } = useFilter();
 	const data = createAsync(async () =>
 		(await listFortune()).map((val) => {
-			return { id: val.id, title: val.fortune, tags: [val.collection] };
+			return { id: val.id, title: val.fortune, tags: [val.collectionName] };
 		}),
 	);
 

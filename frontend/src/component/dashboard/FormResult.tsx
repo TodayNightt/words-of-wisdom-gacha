@@ -5,9 +5,8 @@ import {
 	lazy, createMemo,
 	children, type JSX
 } from "solid-js";
-import type { ErrorWrapper } from "~/lib/types";
-
-const FullWidthDiv = lazy(() => import("../FullWidthDiv"));
+import type { ErrorWrapper } from "~/utils/error-wrapper";
+import FullWidthDiv from "../FullWidthDiv";
 
 type FormResultProps<T> = {
 	responsiveWidth?: string;
