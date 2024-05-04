@@ -1,5 +1,5 @@
 {
-	"name": "ah-ma-fortune",
+	"name": "words_of_wisdom",
 	"type": "module",
 	"scripts": {
 		"dev": "vinxi dev",
