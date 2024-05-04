@@ -34,9 +34,6 @@ export const listFortune = cache(async () => {
         throw ErrorWrapper.fromBackendError(backendResult.error);
     }
 
-
-    console.log(backendResult.value.list)
-
     return backendResult.value.list;
 }, "fortuneList")
 
@@ -46,7 +43,6 @@ export async function getRandom() {
     const result = await catchIfAny<BackendResult<FortuneRandomResponse>>(fetch(`${API_SERVER}/api/fortune/random`).then((res => res.json())));
 
     if (result.isErr()) {
-        console.log(result.error)
         throw ErrorWrapper.fromError(result.error);
     }
 
@@ -132,12 +128,9 @@ export const editFortune = action(async (formData: FormData): Promise<ErrorWrapp
 }> => {
     "use server";
 
-    console.log(formData);
     const id = String(formData.get("id"));
     const fortune = String(formData.get("fortune"));
     const collection = String(formData.get("collection"))
-
-
 
     const schema = z.object({
         id: z.string(),
@@ -149,7 +142,6 @@ export const editFortune = action(async (formData: FormData): Promise<ErrorWrapp
         const causes = parsedResult.error.issues.map(issue => issue.message);
         return new ErrorWrapper("Validation Error", causes);
     }
-
 
     const body = JSON.stringify({
         id: id,
@@ -220,7 +212,6 @@ export const createFortune = action(async (formData: FormData) => {
     const method = "post"
 
     const body = JSON.stringify(parsedResult.data)
-
 
     const result = await catchIfAny<BackendResult<FortuneCreateResponse>>(
         fetch(`${API_SERVER}/api/fortune/create`, {
@@ -303,10 +294,7 @@ export const createFortuneBulk = action(async (form: FormData) => {
         return redirect("/admin/login")
     }
     const headers = new Headers();
-    // headers.append("Content-Type", "multipart/form-data ; boundary=--Wbeejksljsdss");
-    // headers.append("Content-Length", contentLength)
     headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
-
 
     const method: RequestInit["method"] = "post"
 
@@ -315,7 +303,6 @@ export const createFortuneBulk = action(async (form: FormData) => {
     const formData = new FormData();
     formData.set("file", file);
     formData.set("hasHeader", form.get("hasHeader") ? "true" : "false");
-
 
     const result = await catchIfAny<BackendResult<FortuneCreateBulkResponse>>(
         fetch(`${API_SERVER}/api/fortune/bulk`, {
@@ -332,7 +319,6 @@ export const createFortuneBulk = action(async (form: FormData) => {
     }
 
     const backendResult = toResult(result.value);
-
 
     if (backendResult.isErr()) {
         if (backendResult.error.type === "NOT_LOGGED_IN") {

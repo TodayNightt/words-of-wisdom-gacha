@@ -70,7 +70,6 @@ export const createCollection = action(async (collectionName: string) => {
         return ErrorWrapper.fromBackendError(backendResult.error);
     }
 
-
     return reload({ revalidate: collectionList.key });
 })
 
