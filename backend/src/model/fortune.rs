@@ -115,17 +115,17 @@ impl FortuneBmc {
             collection,
         })
     }
-    pub(in crate::model) async fn get_random(mm: &ModelManager) -> Result<String> {
+    pub(in crate::model) async fn get_random(mm: &ModelManager) -> Result<(String, String)> {
         info!("FORTUNEBMC - get_random");
         let db = mm.db();
 
-        let (fortune,) = sqlx::query_as::<_, (String,)>(
-            "SELECT fortune FROM fortunes ORDER BY RANDOM() LIMIT 1",
+        let result= sqlx::query_as::<_, (String, String)>(
+            "SELECT f.fortune, c.collection FROM fortunes f INNER JOIN collections c ON f.collection_id = c.id ORDER BY RANDOM() LIMIT 1",
         )
         .fetch_one(db)
         .await?;
 
-        Ok(fortune)
+        Ok(result)
     }
 
     pub(in crate::model) async fn get_collection_id(mm: &ModelManager, id: i64) -> Result<i64> {

@@ -103,7 +103,11 @@ struct FortuneForCount {
 }
 
 #[derive(Debug, Serialize)]
-pub struct FortuneRandom(pub String);
+#[serde(rename_all = "camelCase")]
+pub struct FortuneRandom {
+    pub fortune: String,
+    pub collection_name: String,
+}
 
 // endregion: type
 
@@ -218,11 +222,15 @@ async fn get_random_fortune(State(mm): State<ModelManager>) -> Result<Json<Value
     let _ = span!(Level::TRACE, "get_random_fortune").enter();
     info!("HANDLER - get_random_fortune");
 
-    let result = exec_fortune_get_random(&mm).await?;
+    let FortuneRandom {
+        fortune,
+        collection_name,
+    } = exec_fortune_get_random(&mm).await?;
 
     Ok(Json(json!({
         "result" : {
-            "fortune" : result
+            "fortune" : fortune,
+            "collectionName" :collection_name
         }
     })))
 }
