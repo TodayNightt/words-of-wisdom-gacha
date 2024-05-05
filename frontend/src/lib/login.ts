@@ -56,7 +56,7 @@ export const login = action(async (formData: FormData) => {
 
   await session.update({ jwtToken: token });
 
-  return redirect("/admin");
+  throw redirect("/admin");
 });
 
 export const logout = action(async () => {
