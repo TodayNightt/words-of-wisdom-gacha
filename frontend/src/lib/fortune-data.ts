@@ -1,5 +1,4 @@
 import { catchIfAny } from "~/utils/catch-if-any";
-import { API_SERVER } from "./api-server_url";
 import type { BackendResult, FortuneInfo, FortuneDeleteResponse, FortuneEditResponse, FortuneCreateResponse, FortuneCountResponse, Unit, FortuneCreateBulkResponse, FortuneListResponse, FortuneRandomResponse } from "./types";
 import { action, cache, redirect, reload } from "@solidjs/router";
 import { z } from "zod";
@@ -10,17 +9,18 @@ import { getRequestEvent } from "solid-js/web";
 export const listFortune = cache(async () => {
     "use server";
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
     console.log("HELLO after getSession")
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         throw redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
 
-    const result = await catchIfAny<BackendResult<FortuneListResponse>>(fetch(`${API_SERVER}/api/fortune/list`, { headers }).then(res => res.json()));
+    const result = await catchIfAny<BackendResult<FortuneListResponse>>(fetch(`${reqsLocal.env.API_URL}/api/fortune/list`, { headers }).then(res => res.json()));
 
     if (result.isErr()) {
         console.log("HELLO fetching error")
@@ -42,7 +42,13 @@ export const listFortune = cache(async () => {
 export async function getRandom() {
     "use server";
 
-    const result = await catchIfAny<BackendResult<FortuneRandomResponse>>(fetch(`${API_SERVER}/api/fortune/random`).then((res => res.json())));
+    const reqsLocal = getRequestEvent()?.locals;
+
+    if (!reqsLocal) {
+        return new ErrorWrapper("Unknown Er ror", []);
+    }
+
+    const result = await catchIfAny<BackendResult<FortuneRandomResponse>>(fetch(`${reqsLocal.env.API_URL}/api/fortune/random`).then((res => res.json())));
 
     if (result.isErr()) {
         throw ErrorWrapper.fromError(result.error);
@@ -60,16 +66,17 @@ export async function getRandom() {
 export const getFortuneInfo = cache(async (id: string) => {
     "use server";
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         throw redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`);
 
-    const result = await catchIfAny<BackendResult<FortuneInfo>>(fetch(`${API_SERVER}/api/fortune/get?id=${id}`, { headers }).then(res => res.json()));
+    const result = await catchIfAny<BackendResult<FortuneInfo>>(fetch(`${reqsLocal.env.API_URL}/api/fortune/get?id=${id}`, { headers }).then(res => res.json()));
 
     if (result.isErr()) {
         throw ErrorWrapper.fromError(result.error);
@@ -90,18 +97,19 @@ export const getFortuneInfo = cache(async (id: string) => {
 
 export const removeFortune = action(async (id: string) => {
     "use server";
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         return redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
 
 
     const result = await catchIfAny<BackendResult<FortuneDeleteResponse>>(
-        fetch(`${API_SERVER}/api/fortune/delete?id=${id}`, {
+        fetch(`${reqsLocal.env.API_URL}/api/fortune/delete?id=${id}`, {
             headers,
             method: "delete",
         }).then((res) => res.json()),
@@ -151,17 +159,18 @@ export const editFortune = action(async (formData: FormData): Promise<ErrorWrapp
         data: fortune
     })
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         return redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
 
     const result = await catchIfAny<BackendResult<FortuneEditResponse>>(
-        fetch(`${API_SERVER}/api/fortune/update`, {
+        fetch(`${reqsLocal.env.API_URL}/api/fortune/update`, {
             method: "post",
             headers,
             body: body,
@@ -202,11 +211,12 @@ export const createFortune = action(async (formData: FormData) => {
         return new ErrorWrapper("Validation Error", causes);
     }
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         return redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
@@ -216,7 +226,7 @@ export const createFortune = action(async (formData: FormData) => {
     const body = JSON.stringify(parsedResult.data)
 
     const result = await catchIfAny<BackendResult<FortuneCreateResponse>>(
-        fetch(`${API_SERVER}/api/fortune/create`, {
+        fetch(`${reqsLocal.env.API_URL}/api/fortune/create`, {
             headers,
             method,
             body,
@@ -243,11 +253,12 @@ export const createFortune = action(async (formData: FormData) => {
 export const getFortuneCountByCollection = cache(async (collectionName: string) => {
     "use server";
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         throw redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
@@ -260,7 +271,7 @@ export const getFortuneCountByCollection = cache(async (collectionName: string) 
 
 
     const result = await catchIfAny<BackendResult<FortuneCountResponse>>(
-        fetch(`${API_SERVER}/api/fortune/count`, {
+        fetch(`${reqsLocal.env.API_URL}/api/fortune/count`, {
             headers,
             method,
             body,
@@ -290,11 +301,12 @@ export const getFortuneCountByCollection = cache(async (collectionName: string) 
 export const createFortuneBulk = action(async (form: FormData) => {
     "use server";
 
-    const session = getRequestEvent()?.locals.sData;
+    const reqsLocal = getRequestEvent()?.locals
 
-    if (!session?.jwtToken) {
+    if (!reqsLocal?.sData?.jwtToken) {
         return redirect("/admin/login")
     }
+    const session = reqsLocal.sData;
     const headers = new Headers();
     headers.append("Authorization", `Bearer ${session?.jwtToken}`)
 
@@ -307,7 +319,7 @@ export const createFortuneBulk = action(async (form: FormData) => {
     formData.set("hasHeader", form.get("hasHeader") ? "true" : "false");
 
     const result = await catchIfAny<BackendResult<FortuneCreateBulkResponse>>(
-        fetch(`${API_SERVER}/api/fortune/bulk`, {
+        fetch(`${reqsLocal.env.API_URL}/api/fortune/bulk`, {
             headers,
             method,
             body: form,

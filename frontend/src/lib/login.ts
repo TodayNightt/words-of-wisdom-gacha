@@ -2,15 +2,21 @@ import { action, redirect } from "@solidjs/router";
 import { z } from "zod";
 import type { BackendResult, LoginResponse, LogoffResponse } from "./types";
 import { catchIfAny } from "~/utils/catch-if-any";
-import { API_SERVER } from "./api-server_url";
 import { ErrorWrapper } from "~/utils/error-wrapper";
 import { toResult } from "./error";
 import { getRequestEventOrThrow } from "~/utils/get-request-event";
 import { updateSessionData } from "./session";
+import { getRequestEvent } from "solid-js/web";
 
 
 export const login = action(async (formData: FormData) => {
   "use server";
+
+  const reqs = getRequestEvent();
+
+  if (!reqs) {
+    return new ErrorWrapper("Unknown Error", []);
+  }
 
   const username = String(formData.get("username"));
   const password = String(formData.get("password"));
@@ -27,7 +33,7 @@ export const login = action(async (formData: FormData) => {
     return new ErrorWrapper("Validation Error", causes);
   }
 
-  const loginResult = await catchIfAny<BackendResult<LoginResponse>>(fetch(`${API_SERVER}/api/admin/login`, {
+  const loginResult = await catchIfAny<BackendResult<LoginResponse>>(fetch(`${reqs.locals.env.API_URL}/api/admin/login`, {
     method: "post",
     headers: {
       "Content-Type": "application/json"
@@ -53,9 +59,9 @@ export const login = action(async (formData: FormData) => {
 
   const token = loginRes.token;
 
-  const requestEvent = getRequestEventOrThrow();
 
-  await updateSessionData(requestEvent, { jwtToken: token });
+
+  await updateSessionData(reqs, { jwtToken: token });
 
   throw redirect("/admin");
 });
@@ -63,16 +69,16 @@ export const login = action(async (formData: FormData) => {
 export const logout = action(async () => {
   "use server";
 
-  const session = getRequestEventOrThrow().locals.sData;
+  const reqs = getRequestEvent();
 
-  if (session.jwtToken) {
+  if (reqs?.locals?.sData.jwtToken) {
 
     const headers = new Headers();
-    headers.append("Authorization", `Bearer ${session.jwtToken}`)
+    headers.append("Authorization", `Bearer ${reqs.locals.sData.jwtToken}`)
 
 
     const logoffResult = await catchIfAny<BackendResult<LogoffResponse>>(
-      fetch(`${API_SERVER}/api/admin/logoff`, {
+      fetch(`${reqs.locals.env.API_URL}/api/admin/logoff`, {
         method: "post",
         headers,
       }).then((res) => res.json()),
@@ -88,8 +94,7 @@ export const logout = action(async () => {
       return ErrorWrapper.fromBackendError(backendResult.error);
     }
 
-    const requestEvent = getRequestEventOrThrow();
-    await updateSessionData(requestEvent, { jwtToken: null })
+    await updateSessionData(reqs, { jwtToken: null })
   }
 
 
