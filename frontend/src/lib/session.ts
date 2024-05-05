@@ -5,13 +5,8 @@ type SessionStore = {
   jwtToken: string | null,
 }
 
-export async function getSession(event?: HTTPEvent) {
+export async function getSession() {
   const password = Environment.getInstance().get("SESSION_SECRET")
-  if (event) {
-    return await useSession<SessionStore>(event, {
-      password
-    })
-  }
   return await useSession<SessionStore>({
     password
   });
