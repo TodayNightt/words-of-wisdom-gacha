@@ -3,25 +3,28 @@ import { API_SERVER } from "./api-server_url";
 import type { BackendResult, FortuneInfo, FortuneDeleteResponse, FortuneEditResponse, FortuneCreateResponse, FortuneCountResponse, Unit, FortuneCreateBulkResponse, FortuneListResponse, FortuneRandomResponse } from "./types";
 import { action, cache, redirect, reload } from "@solidjs/router";
 import { z } from "zod";
-import { getSession } from "./session";
 import { ErrorWrapper } from "~/utils/error-wrapper";
 import { toResult } from "./error";
+import { getRequestEvent } from "solid-js/web";
+import { getRequestEventOrThrow } from "~/utils/get-request-event";
 
 export const listFortune = cache(async () => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    console.log("HELLO after getSession")
+    if (!session.jwtToken) {
         throw redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
     const result = await catchIfAny<BackendResult<FortuneListResponse>>(fetch(`${API_SERVER}/api/fortune/list`, { headers }).then(res => res.json()));
 
     if (result.isErr()) {
+        console.log("HELLO fetching error")
         throw ErrorWrapper.fromError(result.error);
     }
 
@@ -58,14 +61,14 @@ export async function getRandom() {
 export const getFortuneInfo = cache(async (id: string) => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         throw redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session.jwtToken}`);
 
     const result = await catchIfAny<BackendResult<FortuneInfo>>(fetch(`${API_SERVER}/api/fortune/get?id=${id}`, { headers }).then(res => res.json()));
 
@@ -88,14 +91,14 @@ export const getFortuneInfo = cache(async (id: string) => {
 
 export const removeFortune = action(async (id: string) => {
     "use server";
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
 
     const result = await catchIfAny<BackendResult<FortuneDeleteResponse>>(
@@ -149,14 +152,14 @@ export const editFortune = action(async (formData: FormData): Promise<ErrorWrapp
         data: fortune
     })
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
     const result = await catchIfAny<BackendResult<FortuneEditResponse>>(
         fetch(`${API_SERVER}/api/fortune/update`, {
@@ -200,14 +203,14 @@ export const createFortune = action(async (formData: FormData) => {
         return new ErrorWrapper("Validation Error", causes);
     }
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
     const method = "post"
 
@@ -241,14 +244,14 @@ export const createFortune = action(async (formData: FormData) => {
 export const getFortuneCountByCollection = cache(async (collectionName: string) => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         throw redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
     const method = "post"
 
@@ -288,13 +291,13 @@ export const getFortuneCountByCollection = cache(async (collectionName: string) 
 export const createFortuneBulk = action(async (form: FormData) => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
     const method: RequestInit["method"] = "post"
 
