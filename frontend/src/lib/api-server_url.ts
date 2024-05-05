@@ -1,3 +1,3 @@
-import { Environment } from "~/environments";
+import { getRequestEventOrThrow } from "~/utils/get-request-event";
 
-export const API_SERVER = Environment.getInstance().get("API_URL");
+export const API_SERVER = getRequestEventOrThrow().locals.env.API_URL;
