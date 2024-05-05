@@ -6,6 +6,7 @@ type SessionStore = {
 }
 
 export async function getSession() {
+  "use server";
   const password = Environment.getInstance().get("SESSION_SECRET")
   return await useSession<SessionStore>({
     password
