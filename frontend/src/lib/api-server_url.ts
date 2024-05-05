@@ -1,3 +1,3 @@
-import { getRequestEventOrThrow } from "~/utils/get-request-event";
+import { getRequestEvent } from "solid-js/web";
 
-export const API_SERVER = getRequestEventOrThrow().locals.env.API_URL;
+export const API_SERVER = getRequestEvent()?.locals.env.API_URL ?? "";

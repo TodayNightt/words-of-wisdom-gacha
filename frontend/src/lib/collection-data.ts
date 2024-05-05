@@ -5,19 +5,19 @@ import { API_SERVER } from "./api-server_url";
 import { getFortuneInfo, listFortune } from "./fortune-data";
 import { ErrorWrapper } from "~/utils/error-wrapper";
 import { toResult } from "./error";
-import { getRequestEventOrThrow } from "~/utils/get-request-event";
+import { getRequestEvent } from "solid-js/web";
 
 export const collectionList = cache(async () => {
     "use server";
 
-    const session = getRequestEventOrThrow().locals.sData;
+    const session = getRequestEvent()?.locals.sData;
 
-    if (!session.jwtToken) {
+    if (!session?.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session?.jwtToken}`);
 
     const result = await catchIfAny<BackendResult<CollectionList>>(fetch(`${API_SERVER}/api/collections/list`, { headers }).then(res => res.json()));
 
@@ -40,14 +40,14 @@ export const collectionList = cache(async () => {
 export const createCollection = action(async (collectionName: string) => {
     "use server";
 
-    const session = getRequestEventOrThrow().locals.sData;
+    const session = getRequestEvent()?.locals.sData;
 
-    if (!session.jwtToken) {
+    if (!session?.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session?.jwtToken}`);
 
     const body = JSON.stringify({
         collectionName
@@ -79,14 +79,14 @@ export const deleteCollection = action(async (
 ) => {
     "use server";
 
-    const session = getRequestEventOrThrow().locals.sData;
+    const session = getRequestEvent()?.locals.sData;
 
-    if (!session.jwtToken) {
+    if (!session?.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session?.jwtToken}`);
 
     const body = JSON.stringify({
         toDeleteCollectionName: collectionName,
