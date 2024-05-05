@@ -1,11 +1,12 @@
 import { action, redirect } from "@solidjs/router";
-import { getSession } from "./session";
 import { z } from "zod";
 import type { BackendResult, LoginResponse, LogoffResponse } from "./types";
 import { catchIfAny } from "~/utils/catch-if-any";
 import { API_SERVER } from "./api-server_url";
 import { ErrorWrapper } from "~/utils/error-wrapper";
 import { toResult } from "./error";
+import { getRequestEventOrThrow } from "~/utils/get-request-event";
+import { updateSessionData } from "./session";
 
 
 export const login = action(async (formData: FormData) => {
@@ -52,9 +53,9 @@ export const login = action(async (formData: FormData) => {
 
   const token = loginRes.token;
 
-  const session = await getSession();
+  const requestEvent = getRequestEventOrThrow();
 
-  await session.update({ jwtToken: token });
+  await updateSessionData(requestEvent, { jwtToken: token });
 
   throw redirect("/admin");
 });
@@ -62,12 +63,12 @@ export const login = action(async (formData: FormData) => {
 export const logout = action(async () => {
   "use server";
 
-  const session = await getSession();
+  const session = getRequestEventOrThrow().locals.sData;
 
-  if (session.data.jwtToken) {
+  if (session.jwtToken) {
 
     const headers = new Headers();
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`)
+    headers.append("Authorization", `Bearer ${session.jwtToken}`)
 
 
     const logoffResult = await catchIfAny<BackendResult<LogoffResponse>>(
@@ -87,7 +88,8 @@ export const logout = action(async () => {
       return ErrorWrapper.fromBackendError(backendResult.error);
     }
 
-    await session.update({ jwtToken: null });
+    const requestEvent = getRequestEventOrThrow();
+    await updateSessionData(requestEvent, { jwtToken: null })
   }
 
 

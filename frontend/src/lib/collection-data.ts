@@ -2,22 +2,22 @@ import { action, cache, redirect, reload } from "@solidjs/router";
 import type { BackendResult, CollectionList, CreateCollectionResponse, DeleteCollectionRespose } from "./types";
 import { catchIfAny } from "~/utils/catch-if-any";
 import { API_SERVER } from "./api-server_url";
-import { getSession } from "./session";
 import { getFortuneInfo, listFortune } from "./fortune-data";
 import { ErrorWrapper } from "~/utils/error-wrapper";
 import { toResult } from "./error";
+import { getRequestEventOrThrow } from "~/utils/get-request-event";
 
 export const collectionList = cache(async () => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session.jwtToken}`);
 
     const result = await catchIfAny<BackendResult<CollectionList>>(fetch(`${API_SERVER}/api/collections/list`, { headers }).then(res => res.json()));
 
@@ -40,14 +40,14 @@ export const collectionList = cache(async () => {
 export const createCollection = action(async (collectionName: string) => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session.jwtToken}`);
 
     const body = JSON.stringify({
         collectionName
@@ -79,14 +79,14 @@ export const deleteCollection = action(async (
 ) => {
     "use server";
 
-    const session = await getSession();
+    const session = getRequestEventOrThrow().locals.sData;
 
-    if (!session.data.jwtToken) {
+    if (!session.jwtToken) {
         return redirect("/admin/login")
     }
     const headers = new Headers();
     headers.append("Content-Type", "application/json");
-    headers.append("Authorization", `Bearer ${session.data.jwtToken}`);
+    headers.append("Authorization", `Bearer ${session.jwtToken}`);
 
     const body = JSON.stringify({
         toDeleteCollectionName: collectionName,
