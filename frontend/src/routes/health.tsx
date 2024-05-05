@@ -1,12 +1,21 @@
 import { createAsync } from "@solidjs/router";
 import { ErrorBoundary } from "solid-js";
+import { getRequestEvent } from "solid-js/web";
 import ErrorPage from "~/component/ErrorPage";
-import { API_SERVER } from "~/lib/api-server_url";
+import { ErrorWrapper } from "~/utils/error-wrapper";
 
 async function getHello(): Promise<string> {
 	"use server";
 
-	return await fetch(`${API_SERVER}/server/health`).then((res) => res.json());
+	const reqsLocal = getRequestEvent()?.locals;
+
+	if (!reqsLocal) {
+		throw new ErrorWrapper("Unknown Error", []);
+	}
+
+	return await fetch(`${reqsLocal.env.API_URL}/server/health`).then((res) =>
+		res.json(),
+	);
 }
 
 export default function Health() {
