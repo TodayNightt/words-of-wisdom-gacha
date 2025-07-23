@@ -1,2 +1,8 @@
 .env
 container-data/db
+
+frontend
+
+target
+
+.idea
