@@ -2,7 +2,7 @@ use std::{fs, path::PathBuf};
 
 use sqlx::migrate::MigrateDatabase;
 use sqlx::Sqlite;
-use tracing::{error_span, info};
+use tracing::{error, error_span, info};
 
 use crate::model::Db;
 use crate::Result;
@@ -21,7 +21,6 @@ async fn pexec(db: &Db, file: &str) -> Result<()> {
         if sql.is_empty() || sql.trim().is_empty() {
             continue;
         }
-        info!("{sql}");
         sqlx::query(sql.trim()).execute(db).await?;
     }
 
@@ -51,7 +50,13 @@ pub(crate) async fn check_db_present() -> Result<()> {
 
     info!("Generating schema");
 
-    let db = get_db_pool(&config().DB_URL).await?;
+    let db = match get_db_pool(&config().DB_URL).await{
+        Ok(db) => db,
+        Err(err) => {
+            error!("{err:?}");
+            return Err(err.into());
+        }
+    };
 
     // If files other than the initials exists, then run that instead
     // else run the initial db setup
@@ -74,13 +79,15 @@ pub(crate) async fn check_db_present() -> Result<()> {
         .collect();
 
     // If the filtered out migration paths are not empty, we shall run that instead
-    let paths: Vec<PathBuf> = if !migration_exist.is_empty() {
+    let mut paths: Vec<PathBuf> = if !migration_exist.is_empty() {
         migration_exist
     } else {
         fs::read_dir(format!("{}/initial", &config().MIGRATION_DIR))?
             .filter_map(|entry| entry.ok().map(|e| e.path()))
             .collect()
     };
+
+    paths.sort();
 
     for path in paths.into_iter() {
         if let Some(path) = path.to_str() {
