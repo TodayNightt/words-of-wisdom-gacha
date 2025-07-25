@@ -55,7 +55,13 @@ pub(crate) async fn check_db_present() -> Result<()> {
 
     // If files other than the initials exists, then run that instead
     // else run the initial db setup
-    let migration_exist: Vec<PathBuf> = fs::read_dir(&config().MIGRATION_DIR)?
+    let migration_exist: Vec<PathBuf> = match fs::read_dir(&config().MIGRATION_DIR){
+        Ok(dir) => dir,
+        Err(err) => {
+            error!("{err:?}");
+            return Err(err.into())
+        }
+    }
         .filter_map(|entry| entry.ok().map(|e| e.path()))
         .filter_map(|path| {
             if let Some(extension) = path.extension() {
