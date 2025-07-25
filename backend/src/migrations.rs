@@ -29,7 +29,14 @@ async fn pexec(db: &Db, file: &str) -> Result<()> {
 }
 
 pub(crate) async fn check_db_present() -> Result<()> {
-    // FIXME : if the directory does not exist try creating that as well
+    let path = PathBuf::from(&config().DB_URL);
+    if path.parent().is_some_and(|a| !a.exists()){
+        if let Err(err) = fs::create_dir_all(path){
+            error!("{err:?}");
+            return Err(err.into());
+        }
+    }
+
     if !Sqlite::database_exists(&config().DB_URL)
         .await
         .unwrap_or(false)
