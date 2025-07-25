@@ -19,7 +19,7 @@ use crate::{migrations::check_db_present, model::ModelManager};
 
 #[tokio::main]
 async fn main() -> Result<()> {
-    tracing::subscriber::set_global_default(FmtSubscriber::default()).unwrap();
+    tracing_subscriber::fmt().with_target(true).compact().with_thread_ids(false).init();
 
     check_db_present().await?;
 
@@ -48,12 +48,11 @@ async fn main() -> Result<()> {
         );
 
     let listener = tokio::net::TcpListener::bind("0.0.0.0:51000")
-        .await
-        .unwrap();
+        .await?;
 
     info!("Starting server at 0.0.0.0:51000");
 
-    axum::serve(listener, app).await.unwrap();
+    axum::serve(listener, app).await?;
 
     Ok(())
 }
