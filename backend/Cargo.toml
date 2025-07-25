@@ -36,3 +36,8 @@ anyhow = "1"
 httpc-test = "0.1.1"
 serial_test = "3"
 reqwest = "0.12"
+
+
+[[bin]]
+path = "src/main.rs"
+name = "wowg-server"
