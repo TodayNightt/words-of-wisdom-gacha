@@ -19,14 +19,14 @@ services:
       - ROOT_USER=${ROOT_USER:-admin}
       - ROOT_PASS=${ROOT_PASS}
       - KEY=${KEY}
-      - MIGRATION_DIR=${MIGRATION_DIR}
+      - MIGRATION_DIR=${MIGRATION_DIR:-/app/data/migrations}
       - SESSION_SECRET=${SESSION_SECRET}
     volumes:
       - db-data:/app/db
     networks:
       - internal
   proxy:
-    build:
+    build:  
       context: nginx
     networks:
       - internal
